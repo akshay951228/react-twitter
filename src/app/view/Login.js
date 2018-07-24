@@ -11,20 +11,30 @@ import { authUser } from '../redux/actions'
 
 
 class Login extends Component {
-  state = {
-    CurrentUser:null
-  };
+ 
   uiConfig = {
     callbacks: {
-      signInSuccessWithAuthResult: authResult => {
+      signInSuccess: (authResult, credential, redirectUrl) => {
         var CurrentUser = {};
         CurrentUser["uid"] = authResult.uid;
         CurrentUser["photoURL"] = authResult.photoURL;
         CurrentUser["displayName"] = authResult.displayName;
         CurrentUser["email"] = authResult.email;
         CurrentUser["phoneNumber"] = authResult.phoneNumber;
-        this.setState({CurrentUser})
-        return false;
+        console.log("you are a geek if you saw this message");
+        console.log('CurrentUser: ', CurrentUser);
+        const UserRef = firebase.database().ref("users/" + CurrentUser.uid);
+        console.log('CurrentUser.uid: ', CurrentUser.uid);
+            UserRef.once("value", dataSnap => {
+              if (dataSnap.val()) {
+                this.props.authUser(CurrentUser);
+              } else {
+                UserRef.update(CurrentUser).then(result => {
+                  this.props.authUser(CurrentUser);
+                });
+              }
+            });
+        return true;
       }
     },
     signInFlow: "popup",
@@ -35,6 +45,7 @@ class Login extends Component {
   };
   componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
+      console.log('user: ', user);
       if (user) {
         var CurrentUser = {};
         CurrentUser["uid"] = user.uid;

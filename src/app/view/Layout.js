@@ -60,16 +60,23 @@ class Layout extends Component {
   };
   handleSubmit =async()=>{
     const {tweet} = this.state
+    const {auth_user} = this.props
     const key = await firebase.database().ref('tweets/').push().key
-    firebase.database().ref('tweets/'+key).set({
-      tweet:tweet
-    }).then((res)=>console.log(res))
-
+    const userTweetsRef= firebase.database().ref('userTweet/'+auth_user.uid)
+    const newTweet={
+      tweet:tweet,
+      tweetId:key,
+      uid:auth_user.uid,
+      avatar :auth_user.photoURL,
+      name:auth_user.displayName,
+      timestamp:Date.now()
+    }
+    firebase.database().ref('tweets/'+key).set(newTweet).then((res)=>console.log("succes"))
+    userTweetsRef.child(key).set(newTweet).then((res)=>console.log("succesfully added to UsersTweet"))
     this.setState({ open: false,tweet:"" });
   }
   render() {
     const { classes,children,auth_user,authUser } = this.props;
-    console.log('auth_user: ', !auth_user,auth_user);
     return (
       <div className={classes.root}>
         <AppBar position="fixed">
@@ -134,7 +141,6 @@ const mapStateToProps = state => {
 const mapActions={
   authUser
 }
-
 
 export default compose(
     withRouter,
