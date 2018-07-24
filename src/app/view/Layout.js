@@ -12,7 +12,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {compose}  from 'recompose'
 import firebase from 'firebase/app'
-import 'firebase/database'
+import 'firebase/auth'
+import 'firebase/database/dist/index.cjs'
+import { connect } from 'react-redux';
+import { authUser } from '../redux/actions'
 
 const styles = theme=> ({
   root: {
@@ -41,7 +44,7 @@ class Layout extends Component {
   state = {
     open: false,
     tweet:''
-  };
+    };
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -65,7 +68,8 @@ class Layout extends Component {
     this.setState({ open: false,tweet:"" });
   }
   render() {
-    const { classes,children } = this.props;
+    const { classes,children,auth_user,authUser } = this.props;
+    console.log('auth_user: ', !auth_user,auth_user);
     return (
       <div className={classes.root}>
         <AppBar position="fixed">
@@ -77,7 +81,7 @@ class Layout extends Component {
             >
               Twitter
             </Typography>
-            <Button color="inherit" onClick={this.handleClickOpen}>tweet</Button>
+           { !!auth_user&&  <Button color="inherit" onClick={this.handleClickOpen}>tweet</Button>}
             <Dialog
               open={this.state.open}
               onClose={this.handleClose}
@@ -106,7 +110,14 @@ class Layout extends Component {
               </Button>
               </DialogActions>
             </Dialog>
-            <Button color="inherit">Login</Button>
+            {!auth_user && <Button color="inherit" component={Link}
+            to={'/login'}>Login</Button>}
+            {!!auth_user&& 
+            <Button color="inherit" 
+            onClick={()=>{
+              authUser(null)
+              firebase.auth().signOut()}}
+            >Logout</Button>}
           </Toolbar>
         </AppBar>
         <main className={classes.content}>
@@ -117,10 +128,16 @@ class Layout extends Component {
     );
   }
 }
-
+const mapStateToProps = state => {
+  return { auth_user: state.auth_user };
+};
+const mapActions={
+  authUser
+}
 
 
 export default compose(
     withRouter,
+    connect(mapStateToProps,mapActions),
     withStyles(styles)
 )(Layout);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/app'
+import firebase from 'firebase'
+import 'firebase'
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,12 +8,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
-
-
+import { compose } from 'recompose'
 const styles = {
   card: {
     maxWidth: 450,
-    marginBottom:'10px'
+    marginBottom: '10px'
   },
   media: {
     height: 0,
@@ -21,21 +20,21 @@ const styles = {
   },
 };
 class Tweets extends Component {
-  state={
-    allTweets:[]
+  state = {
+    allTweets: []
   }
-  componentDidMount(){
+  componentDidMount() {
     const tweetsRef = firebase.database().ref('tweets')
-    tweetsRef.on('value',(dataSnap)=>{
+    tweetsRef.on('value', (dataSnap) => {
       this.setState({
-        allTweets:dataSnap.val()
+        allTweets: dataSnap.val()
       })
     })
   }
   render() {
-    const {allTweets} = this.state 
-    const { classes } = this.props;
-    if(allTweets.length===0){
+    const { allTweets } = this.state
+    const { classes, auth_user } = this.props;
+    if (allTweets.length === 0) {
       return (
         <div>
           Loading
@@ -53,7 +52,7 @@ class Tweets extends Component {
             <Card className={classes.card} key={key} >
               <CardContent>
                 <Typography gutterBottom variant="headline" component="h2">
-                  Lizard
+                  Tweet
         </Typography>
                 <Typography component="p">
                   {allTweets[key].tweet}
@@ -71,4 +70,7 @@ class Tweets extends Component {
     )
   }
 }
-export default withStyles(styles)(Tweets)
+
+export default compose(
+  withStyles(styles)
+)(Tweets)

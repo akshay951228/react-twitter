@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter as Router } from "react-router-dom";
-import Layout from './Layout'
+import Layout from './view/Layout'
 import MyRoutes from './MyRoutes';
 class App extends Component {
   render() {
