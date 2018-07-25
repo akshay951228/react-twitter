@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { compose } from 'recompose'
 import Avatar from '@material-ui/core/Avatar';
-
+import {Link} from 'react-router-dom'
 const styles = {
   card: {
     maxWidth: 450,
@@ -49,6 +49,13 @@ class Tweets extends Component {
         </div>
       )
     }
+    if(!allTweets){
+      return (
+        <div>
+          Your are the first to post
+        </div>
+      )
+    }
     return (
       <div>
         <Grid
@@ -57,23 +64,29 @@ class Tweets extends Component {
           align="center" direction='column'
         >
           {Object.keys(allTweets).map((key) =>{
-          const date = new Date(allTweets[key].timestamp)          
+          const date = new Date(allTweets[key].timestamp)
+          
            return <Card className={classes.card} key={key} >
               <CardContent>
+              <div style={{display:'flex',flexDirection:'row',flexGrow: 1}}>
               <Avatar src={allTweets[key].avatar} />
-                <Typography gutterBottom variant="headline" component="h2">
+                <Typography gutterBottom variant="title" component="h2" style={{marginLeft:"20px"}}>
                   {allTweets[key].name}
                 </Typography>
-                <Typography component="p">
+                </div>
+                <Typography component="p" style={{display:'flex',flexDirection:'row',marginTop:"10px"}}>
                   {allTweets[key].tweet}
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" color="primary">
+                <Button size="small" color="primary"
+                  component={Link}
+                  to={'/tweet/'+allTweets[key].tweetId}
+                >
                   Reply
                  </Button>
-                 <Typography gutterBottom variant="body2" component="h2">
-                  {`${date.getHours()}:${date.getMinutes()} ${date.getMonth() + 1}/${date.getDate() } `}
+                 <Typography gutterBottom variant="body2" component="h2" style={{ flexGrow:1,justifyContent:'flex-end'}} >
+                  {`${date.getHours()}:${date.getMinutes()}`}
                 </Typography>
               </CardActions>
             </Card>

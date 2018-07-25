@@ -45,7 +45,6 @@ class Login extends Component {
   };
   componentDidMount() {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
-      console.log('user: ', user);
       if (user) {
         var CurrentUser = {};
         CurrentUser["uid"] = user.uid;

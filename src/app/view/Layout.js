@@ -69,7 +69,7 @@ class Layout extends Component {
       uid:auth_user.uid,
       avatar :auth_user.photoURL,
       name:auth_user.displayName,
-      timestamp:Date.now()
+      timestamp:firebase.database.ServerValue.TIMESTAMP
     }
     firebase.database().ref('tweets/'+key).set(newTweet).then((res)=>console.log("succes"))
     userTweetsRef.child(key).set(newTweet).then((res)=>console.log("succesfully added to UsersTweet"))
@@ -88,7 +88,12 @@ class Layout extends Component {
             >
               Twitter
             </Typography>
-           { !!auth_user&&  <Button color="inherit" onClick={this.handleClickOpen}>tweet</Button>}
+           { !!auth_user &&  
+             <div>
+               <Button color="inherit" component={Link} to={'/user/'+auth_user.uid} >Ur_Tweets</Button>
+               <Button color="inherit" onClick={this.handleClickOpen}>tweet</Button>
+             </div>
+           }
             <Dialog
               open={this.state.open}
               onClose={this.handleClose}
