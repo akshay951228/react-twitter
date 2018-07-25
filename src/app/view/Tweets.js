@@ -11,6 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import { compose } from 'recompose'
 import Avatar from '@material-ui/core/Avatar';
 import {Link} from 'react-router-dom'
+import moment from 'moment'
+
 const styles = {
   card: {
     maxWidth: 450,
@@ -64,7 +66,7 @@ class Tweets extends Component {
           align="center" direction='column'
         >
           {Object.keys(allTweets).map((key) =>{
-          const date = new Date(allTweets[key].timestamp)
+          const date = moment(allTweets[key].timestamp).fromNow()
           
            return <Card className={classes.card} key={key} >
               <CardContent>
@@ -86,7 +88,7 @@ class Tweets extends Component {
                   Reply
                  </Button>
                  <Typography gutterBottom variant="body2" component="h2" style={{ flexGrow:1,justifyContent:'flex-end'}} >
-                  {`${date.getHours()}:${date.getMinutes()}`}
+                  {date}
                 </Typography>
               </CardActions>
             </Card>

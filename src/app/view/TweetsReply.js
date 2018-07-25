@@ -12,6 +12,8 @@ import { compose } from 'recompose'
 import Avatar from '@material-ui/core/Avatar';
 import { connect } from 'react-redux';
 import {TextField,Button} from '@material-ui/core';
+import moment from 'moment'
+
 const styles = theme=>({
   card: {
     maxWidth: 500,
@@ -96,7 +98,7 @@ class Tweets extends Component {
         </div>
       )
     }
-    const date = new Date(selectedTweet.timestamp) 
+    const date = moment(selectedTweet.timestamp).fromNow()
     if(selectedTweet){
       return (
         <div>
@@ -119,7 +121,7 @@ class Tweets extends Component {
               </CardContent>
               <CardActions>
               <Typography gutterBottom variant="body2" component="h2">
-                  {`${date.getHours()}:${date.getMinutes()}`}
+                  {date}
                 </Typography>
                 </CardActions>
             </Card>
@@ -135,7 +137,7 @@ class Tweets extends Component {
               </Button>
             </form>
             {replyTweets && Object.keys(replyTweets).length!=0 && Object.keys(replyTweets).map((key) =>{
-              const date = new Date(replyTweets[key].timestamp)
+              const date = moment(selectedTweet.timestamp).fromNow()
             return <Card className={classes.card} key={key}>
               <CardContent>
                 <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
@@ -150,7 +152,7 @@ class Tweets extends Component {
               </CardContent>
               <CardActions>
                 <Typography gutterBottom variant="body2" component="h2">
-                  {`${date.getHours()}:${date.getMinutes()}`}
+                  {date}
                 </Typography>
               </CardActions>
             </Card>
